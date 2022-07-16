@@ -1,0 +1,17 @@
+mapping = {
+    'BIGINT': 'long',
+    'AUTO': 'int',
+    'BIGAUTO': 'long',
+    'BOOL': 'boolean',
+    'DATETIME': 'date',
+    'DATE': 'date',
+    'FLOAT': 'float',
+    'INT': 'integer',
+    'TEXT': 'text',
+    'VARCHAR': 'text',
+    'CHAR': 'text',
+    'TIME': 'date',
+    'SMALLINT': 'short',
+    'DOUBLE': 'double',
+    'DECIMAL': 'scaled_float',
+}

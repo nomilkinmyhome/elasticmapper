@@ -1,0 +1,19 @@
+[project]
+name = "elasticmapper"
+version = "0.1.0"
+authors = [
+  { name="ihatemilk", email="vyckluchi75@gmail.com" },
+]
+description = "Generating ElasticSearch mappings based on ORM's models"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/nomilkinmyhome/elasticmapper"
+"Bug Tracker" = "https://github.com/nomilkinmyhome/elasticmapper/issues"

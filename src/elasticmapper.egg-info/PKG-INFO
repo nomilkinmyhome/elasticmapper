@@ -1,0 +1,142 @@
+Metadata-Version: 2.1
+Name: elasticmapper
+Version: 0.1.0
+Summary: Generating ElasticSearch mappings based on ORM's models
+Author-email: ihatemilk <vyckluchi75@gmail.com>
+License: MIT License
+        
+        Copyright (c) 2022 ihatemilk
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+Project-URL: Homepage, https://github.com/nomilkinmyhome/elasticmapper
+Project-URL: Bug Tracker, https://github.com/nomilkinmyhome/elasticmapper/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# ElasticMapper
+### ElasticSearch mapper for three ORMs - SQLAlchemy, Peewee, DjangoORM.
+#### Allows you to easily generate ElasticSearch mappings based on models.
+
+## Basic usage
+### Peewee example
+```python
+from peewee import *
+from elasticmapper import load, SupportedORMs
+
+db = SqliteDatabase('my_app.db')
+
+class BaseModel(Model):
+    class Meta:
+        database = db
+
+class User(BaseModel):
+    username = CharField(unique=True)
+
+user_elastic_mapping = load(model=User, orm=SupportedORMs.Peewee) 
+```
+
+### SQLAlchemy example
+
+```python
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import Column, Integer, String
+from elasticmapper import load, SupportedORMs
+
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+
+user_elastic_mapping = load(model=User, orm=SupportedORMs.SQLAlchemy) 
+```
+
+### DjangoORM example
+
+```python
+from django.db import models
+from elasticmapper import load, SupportedORMs
+
+class User(models.Model):
+    username = models.CharField(max_length=30)
+
+user_elastic_mapping = load(model=User, orm=SupportedORMs.DjangoORM) 
+```
+
+#### Output for all examples: 
+
+```python
+{
+    'id': 'int',
+    'username': 'text'
+}
+```
+
+## Documentation
+
+### elasticmapper.load
+
+- model - required param
+
+A model instance.
+
+- orm - required param
+
+One of the SupportedORMs attributes.
+
+- keyword_fields
+
+A collection that contains attribute names. All of them will have ```keyword``` type in the output mapping.
+
+- include
+
+A collection that contains attribute names. Attributes that are not listed in this collection will not be included in the output mapping.
+
+- exclude
+
+A collection that contains attribute names. Attributes that are listed in this collection will not be included in the output mapping.
+
+- alternative_names
+
+A dictionary that contains attribute names and their new names which will be listed in the output mapping.
+
+For example: 
+
+```elasticmapper.load(model=..., orm=..., alternative_names={'id': 'obj_id'})```
+
+Expected output:
+
+```{'obj_id': 'int'}```
+
+
+
+## Contributing
+
+PR are welcome! Thank you for your contribution.
+
+## License 
+
+Copyright © 2022 Polina Beskorovaynaya [ihatemilk](https://github.com/nomilkinmyhome)
+
+This project has [MIT License](https://github.com/nomilkinmyhome/elasticmapper/blob/main/LICENSE).

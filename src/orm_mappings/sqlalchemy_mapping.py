@@ -1,0 +1,15 @@
+mapping = {
+    'big_integer': 'long',
+    'boolean': 'boolean',
+    'date': 'date',
+    'date_time': 'date',
+    'float': 'float',
+    'integer': 'integer',
+    'unicode': 'text',
+    'unicode_text': 'text',
+    'text': 'text',
+    'string': 'text',
+    'time': 'date',
+    'small_integer': 'short',
+    'numeric': 'double',
+}
