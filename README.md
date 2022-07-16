@@ -2,6 +2,10 @@
 ### ElasticSearch mapper for three ORMs - SQLAlchemy, Peewee, DjangoORM.
 #### Allows you to easily generate ElasticSearch mappings based on models.
 
+## Installation
+
+```pip install elasticmapper```
+
 ## Basic usage
 ### Peewee example
 ```python
