@@ -28,7 +28,7 @@ def load(
 
     for column_name, column_value in schema.items():
         if column_name in include or column_name not in exclude:
-            schema[column_name] = orm_mapping.get(column_value)
+            schema[column_name] = {'type': orm_mapping.get(column_value)}
 
     if keyword_fields is not None:
         _fill_keyword_fields(schema, keyword_fields)
@@ -61,10 +61,10 @@ def _fill_keyword_fields(schema, keyword_fields):
 
 def _rename_fields_using_alternative_names(schema, alternative_names):
     old_names = []
-    for column_name, column_value in schema.items():
+    for column_name, column_type in schema.items():
         for old_name, new_name in alternative_names.items():
             if column_name == old_name:
-                schema[new_name] = column_value
+                schema[new_name] = column_type['type']
                 old_names.append(old_name)
     for old_name in old_names:
         schema.pop(old_name)
