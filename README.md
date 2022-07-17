@@ -20,6 +20,8 @@ class BaseModel(Model):
 
 class User(BaseModel):
     username = CharField(unique=True)
+    is_active = BooleanField(default=True)
+    age = IntegerField()
 
 user_elastic_mapping = load(model=User, orm=SupportedORMs.Peewee) 
 ```
@@ -28,7 +30,7 @@ user_elastic_mapping = load(model=User, orm=SupportedORMs.Peewee)
 
 ```python
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Boolean
 from elasticmapper import load, SupportedORMs
 
 Base = declarative_base()
@@ -37,6 +39,8 @@ class User(Base):
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
     username = Column(String)
+    is_active = Column(Boolean)
+    age = Column(Integer)
 
 user_elastic_mapping = load(model=User, orm=SupportedORMs.SQLAlchemy) 
 ```
@@ -49,6 +53,8 @@ from elasticmapper import load, SupportedORMs
 
 class User(models.Model):
     username = models.CharField(max_length=30)
+    is_active = models.BooleanField(default=True)
+    age = models.IntegerField()
 
 user_elastic_mapping = load(model=User, orm=SupportedORMs.DjangoORM) 
 ```
@@ -58,7 +64,9 @@ user_elastic_mapping = load(model=User, orm=SupportedORMs.DjangoORM)
 ```python
 {
     'id': 'int',
-    'username': 'text'
+    'username': 'text',
+    'age': 'int',
+    'is_active': 'bool'
 }
 ```
 
