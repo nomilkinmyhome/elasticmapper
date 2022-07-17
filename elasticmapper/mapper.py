@@ -1,7 +1,7 @@
 from typing import Collection, Dict, Optional
 
-from supported_orms import SupportedORMs
-from orm_mappings import sqlalchemy_mapping, peewee_mapping, django_mapping
+from elasticmapper.supported_orms import SupportedORMs
+from elasticmapper.orm_mappings import sqlalchemy_mapping, peewee_mapping, django_mapping
 
 _supported_orms = tuple(SupportedORMs)
 _orm_fields_mapping = {

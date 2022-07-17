@@ -1,5 +1,5 @@
-from mapper import load
-from supported_orms import SupportedORMs
+from elasticmapper.mapper import load
+from elasticmapper.supported_orms import SupportedORMs
 
 __all__ = (
     load,
