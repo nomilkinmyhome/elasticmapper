@@ -49,7 +49,7 @@ def _get_model_columns(model, orm):
             columns[column_name] = column_meta.__class__.field_type
     if orm is SupportedORMs.DjangoORM:
         for column_name in model._meta.local_fields:
-            columns[column_name] = column_name.get_internal_type()
+            columns[column_name.__dict__['name']] = column_name.get_internal_type()
     return columns
 
 
