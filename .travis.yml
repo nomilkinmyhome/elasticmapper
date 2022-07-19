@@ -6,3 +6,6 @@ script:
   pytest && flake8 elasticmapper --ignore E501
 install:
   - pip install -r requirements.txt
+branches:
+  only:
+    - main
