@@ -63,10 +63,10 @@ user_elastic_mapping = load(model=User, orm=SupportedORMs.DjangoORM)
 
 ```python
 {
-    'id': 'int',
-    'username': 'text',
-    'age': 'int',
-    'is_active': 'bool'
+    'id': {'type': 'integer'},
+    'username': {'type': 'text'},
+    'age': {'type': 'integer'},
+    'is_active': {'type': 'boolean'}
 }
 ```
 

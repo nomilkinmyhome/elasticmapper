@@ -1,7 +1,11 @@
 from typing import Collection, Dict, Optional
 
 from elasticmapper.supported_orms import SupportedORMs
-from elasticmapper.orm_mappings import sqlalchemy_mapping, peewee_mapping, django_mapping
+from elasticmapper.orm_mappings import (
+    sqlalchemy_mapping,
+    peewee_mapping,
+    django_mapping,
+)
 
 _supported_orms = tuple(SupportedORMs)
 _orm_fields_mapping = {
@@ -25,18 +29,36 @@ def load(
 
     orm_mapping = _orm_fields_mapping.get(orm)
     schema = _get_model_columns(model, orm)
-
-    for column_name, column_value in schema.items():
-        if column_name in include or column_name not in exclude:
-            schema[column_name] = orm_mapping.get(column_value)
+    _fill_schema(schema, exclude, include, orm_mapping)
 
     if keyword_fields is not None:
         _fill_keyword_fields(schema, keyword_fields)
 
     if alternative_names is not None:
-        _rename_fields_using_alternative_names(schema, alternative_names)
+        schema = _rename_fields_using_alternative_names(
+            schema,
+            alternative_names,
+        )
 
     return schema
+
+
+def _fill_schema(schema, exclude, include, orm_mapping):
+    extra_columns = []
+    for column_name, column_value in schema.items():
+        conditions = (
+            (exclude and column_name in exclude),
+            (include and column_name not in include),
+        )
+        if any(conditions):
+            extra_columns.append(column_name)
+        schema[column_name] = {'type': orm_mapping.get(column_value)}
+    _delete_extra_columns(schema, extra_columns)
+
+
+def _delete_extra_columns(schema, columns_to_delete):
+    for column in columns_to_delete:
+        schema.pop(column)
 
 
 def _get_model_columns(model, orm):
@@ -56,15 +78,14 @@ def _get_model_columns(model, orm):
 def _fill_keyword_fields(schema, keyword_fields):
     for column_name in schema.keys():
         if column_name in keyword_fields:
-            schema[column_name] = 'keyword'
+            schema[column_name] = {'type': 'keyword'}
 
 
 def _rename_fields_using_alternative_names(schema, alternative_names):
-    old_names = []
-    for column_name, column_value in schema.items():
+    new_schema = schema.copy()
+    for column_name, column_type in schema.items():
         for old_name, new_name in alternative_names.items():
             if column_name == old_name:
-                schema[new_name] = column_value
-                old_names.append(old_name)
-    for old_name in old_names:
-        schema.pop(old_name)
+                new_schema[new_name] = {'type': column_type['type']}
+                new_schema.pop(old_name)
+    return new_schema

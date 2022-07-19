@@ -1,6 +1,6 @@
 [project]
 name = "elasticmapper"
-version = "0.1.6"
+version = "0.1.7"
 authors = [
   { name="ihatemilk", email="vyckluchi75@gmail.com" },
 ]
