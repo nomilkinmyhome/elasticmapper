@@ -1,6 +1,6 @@
 mapping = {
     'BigIntegerField': 'long',
-    'AutoField': 'int',
+    'AutoField': 'integer',
     'BigAutoField': 'long',
     'BooleanField': 'boolean',
     'DateTimeField': 'date',
@@ -19,7 +19,7 @@ mapping = {
     'IPAddressField': 'text',
     'SlugField': 'text',
     'PositiveBigIntegerField': 'long',
-    'PositiveIntegerField': 'int',
+    'PositiveIntegerField': 'integer',
     'PositiveSmallIntegerField': 'short',
     'FilePathField': 'text',
     'CommaSeparatedIntegerField': 'numeric',

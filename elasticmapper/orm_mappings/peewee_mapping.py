@@ -1,6 +1,6 @@
 mapping = {
     'BIGINT': 'long',
-    'AUTO': 'int',
+    'AUTO': 'integer',
     'BIGAUTO': 'long',
     'BOOL': 'boolean',
     'DATETIME': 'date',
