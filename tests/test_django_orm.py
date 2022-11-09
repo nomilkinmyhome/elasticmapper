@@ -1,5 +1,6 @@
 import os
 
+import pytest
 from django.conf import settings
 from django.apps import apps
 from django.db import models
@@ -25,6 +26,11 @@ class User(models.Model):
     age = models.SmallIntegerField()
 
 
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+
+
 def test_django_mapping():
     user_elastic_mapping = load(
         model=User,
@@ -35,3 +41,26 @@ def test_django_mapping():
     assert user_elastic_mapping['age'] == {'type': 'short'}
     assert 'is_active' not in user_elastic_mapping
     assert 'id' not in user_elastic_mapping
+
+
+@pytest.mark.parametrize(
+    'follow_nested, excepted_result',
+    [
+        (False, {'type': 'integer'}),
+        (True, {'type': {
+            'properties': {
+                'id': {'type': 'integer'},
+                'username': {'type': 'text'},
+                'is_active': {'type': 'boolean'},
+                'age': {'type': 'short'},
+            },
+        }}),
+    ]
+)
+def test_django_fk_mapping(follow_nested, excepted_result):
+    post_elastic_mapping = load(
+        model=Post,
+        orm=SupportedORMs.DjangoORM,
+        follow_nested=follow_nested,
+    )
+    assert post_elastic_mapping['author'] == excepted_result

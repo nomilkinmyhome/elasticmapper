@@ -7,6 +7,7 @@ from elasticmapper.orm_mappings import (
     django_mapping,
 )
 
+FOREIGN_KEYS_FIELDS_NAMES = ('ForeignKey', )
 _supported_orms = tuple(SupportedORMs)
 _orm_fields_mapping = {
     SupportedORMs.SQLAlchemy: sqlalchemy_mapping,
@@ -22,6 +23,7 @@ def load(
         alternative_names: Optional[Dict[str, str]] = None,
         include: Collection[Optional[str]] = (),
         exclude: Collection[Optional[str]] = (),
+        follow_nested: bool = False,
 ):
     if orm not in _supported_orms:
         raise RuntimeError(f'ORM is not supported yet. '
@@ -29,7 +31,7 @@ def load(
 
     orm_mapping = _orm_fields_mapping.get(orm)
     schema = _get_model_columns(model, orm)
-    _fill_schema(schema, exclude, include, orm_mapping)
+    _fill_schema(schema, exclude, include, orm_mapping, follow_nested, orm, model)
 
     if keyword_fields is not None:
         _fill_keyword_fields(schema, keyword_fields)
@@ -43,7 +45,7 @@ def load(
     return schema
 
 
-def _fill_schema(schema, exclude, include, orm_mapping):
+def _fill_schema(schema, exclude, include, orm_mapping, follow_nested, orm, model):
     extra_columns = []
     for column_name, column_value in schema.items():
         conditions = (
@@ -52,8 +54,24 @@ def _fill_schema(schema, exclude, include, orm_mapping):
         )
         if any(conditions):
             extra_columns.append(column_name)
-        schema[column_name] = {'type': orm_mapping.get(column_value)}
+        if column_value in FOREIGN_KEYS_FIELDS_NAMES:
+            schema[column_name] = {'type': _process_foreign_keys(column_name, follow_nested, orm, model, orm_mapping)}
+        else:
+            schema[column_name] = {'type': orm_mapping.get(column_value)}
     _delete_extra_columns(schema, extra_columns)
+
+
+def _process_foreign_keys(column_name, follow_nested, orm, model, orm_mapping):
+    if orm is SupportedORMs.DjangoORM:
+        if not follow_nested:
+            return orm_mapping.get(model._meta.get_field(column_name).target_field.model._meta.local_fields[0].get_internal_type())
+        else:
+            return {
+                'properties': load(
+                    model=model._meta.get_field(column_name).target_field.model,
+                    orm=orm,
+                ),
+            }
 
 
 def _delete_extra_columns(schema, columns_to_delete):
