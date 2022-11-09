@@ -72,7 +72,7 @@ user_elastic_mapping = DjangoMapper(model=User).load()
 
 ## Documentation
 
-Project documentation lives [here](https://github.com/nomilkinmyhome/elasticmapper/blob/main/LICENSE).
+Project documentation lives [here](https://elasticmapper.readthedocs.io/en/latest/).
 
 ## Contributing
 
