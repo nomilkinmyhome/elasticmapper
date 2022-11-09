@@ -1,7 +1,7 @@
-from elasticmapper.mapper import load
-from elasticmapper.supported_orms import SupportedORMs
+from elasticmapper.mapper import DjangoMapper, PeeweeMapper, SQLAlchemyMapper
 
 __all__ = (
-    load,
-    SupportedORMs,
+    'DjangoMapper',
+    'PeeweeMapper',
+    'SQLAlchemyMapper',
 )
