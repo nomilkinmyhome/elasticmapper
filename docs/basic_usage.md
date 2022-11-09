@@ -1,12 +1,5 @@
-# ElasticMapper
-### ElasticSearch mapper for three ORMs - SQLAlchemy, Peewee, DjangoORM.
-#### Allows you to easily generate ElasticSearch mappings based on models.
+# Basic usage
 
-## Installation
-
-```pip install elasticmapper```
-
-## Basic usage
 ### Peewee example
 ```python
 from peewee import *
@@ -69,17 +62,3 @@ user_elastic_mapping = DjangoMapper(model=User).load()
     'is_active': {'type': 'boolean'}
 }
 ```
-
-## Documentation
-
-Project documentation lives [here](https://github.com/nomilkinmyhome/elasticmapper/blob/main/LICENSE).
-
-## Contributing
-
-PR are welcome! If you want to help, please check [the issues](https://github.com/nomilkinmyhome/elasticmapper/issues) and fix one of them. Thank you for your contribution.
-
-## License 
-
-Copyright © 2022 Polina Beskorovaynaya [ihatemilk](https://github.com/nomilkinmyhome)
-
-This project has [MIT License](https://github.com/nomilkinmyhome/elasticmapper/blob/main/LICENSE).
