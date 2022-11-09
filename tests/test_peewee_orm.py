@@ -1,3 +1,4 @@
+import pytest
 from peewee import *
 
 from elasticmapper import PeeweeMapper
@@ -17,6 +18,11 @@ class User(BaseModel):
     name_keyword = CharField()
 
 
+class Post(BaseModel):
+    title = CharField()
+    author = ForeignKeyField(User, on_delete='CASCADE')
+
+
 def test_peewee_mapping():
     user_elastic_mapping = PeeweeMapper(
         model=User,
@@ -27,3 +33,28 @@ def test_peewee_mapping():
     assert user_elastic_mapping['age'] == {'type': 'short'}
     assert user_elastic_mapping['is_active'] == {'type': 'boolean'}
     assert user_elastic_mapping['name_keyword'] == {'type': 'keyword'}
+
+
+@pytest.mark.parametrize(
+    'follow_nested, excepted_result',
+    [
+        (False, {'type': 'integer'}),
+        (True, {'type': {
+            'properties': {
+                'id': {'type': 'integer'},
+                'username': {'type': 'text'},
+                'is_active': {'type': 'boolean'},
+                'age': {'type': 'short'},
+            },
+        }}),
+    ]
+)
+def test_peewee_fk_mapping(follow_nested, excepted_result):
+    print(Post._meta.columns.values())
+
+    post_elastic_mapping = PeeweeMapper(
+        model=Post,
+        follow_nested=follow_nested,
+    ).load()
+    for field in excepted_result:
+        assert field in post_elastic_mapping['author_id']

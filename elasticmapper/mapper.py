@@ -157,7 +157,18 @@ class PeeweeMapper(Mapper):
         return columns
 
     def _process_foreign_keys(self, column_name):
-        return None
+        foreign_model = self.model._meta.columns.get(column_name).rel_model
+        if not self.follow_nested:
+            return self.orm_mapping.get(self.model._meta.columns.get(column_name).rel_field)
+        else:
+            return {
+                'properties': self.__class__(
+                    model=foreign_model,
+                ).load(),
+            }
 
     def _map_field(self, column_name, column_value):
-        return {'type': self.orm_mapping.get(column_value)}
+        if 'rel_model' in self.model._meta.columns.get(column_name).__dict__:
+            return {'type': self._process_foreign_keys(column_name)}
+        else:
+            return {'type': self.orm_mapping.get(column_value)}
