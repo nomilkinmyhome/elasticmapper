@@ -4,70 +4,73 @@ Basic usage
 ============
 Peewee example
 ============
-```python
-from peewee import *
-from elasticmapper import PeeweeMapper
+.. code-block:: python
 
-db = SqliteDatabase('my_app.db')
+    from peewee import *
+    from elasticmapper import PeeweeMapper
 
-class BaseModel(Model):
-    class Meta:
-        database = db
+    db = SqliteDatabase('my_app.db')
 
-class User(BaseModel):
-    username = CharField(unique=True)
-    is_active = BooleanField(default=True)
-    age = IntegerField()
+    class BaseModel(Model):
+        class Meta:
+            database = db
 
-user_elastic_mapping = PeeweeMapper(model=User).load()
-```
+    class User(BaseModel):
+        username = CharField(unique=True)
+        is_active = BooleanField(default=True)
+        age = IntegerField()
+
+    user_elastic_mapping = PeeweeMapper(model=User).load()
+
 
 ============
 SQLAlchemy example
 ============
 
-```python
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean
-from elasticmapper import SQLAlchemyMapper
+.. code-block:: python
 
-Base = declarative_base()
+    from sqlalchemy.orm import declarative_base
+    from sqlalchemy import Column, Integer, String, Boolean
+    from elasticmapper import SQLAlchemyMapper
 
-class User(Base):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    username = Column(String)
-    is_active = Column(Boolean)
-    age = Column(Integer)
+    Base = declarative_base()
 
-user_elastic_mapping = SQLAlchemyMapper(model=User).load()
-```
+    class User(Base):
+        __tablename__ = 'users'
+        id = Column(Integer, primary_key=True)
+        username = Column(String)
+        is_active = Column(Boolean)
+        age = Column(Integer)
+
+    user_elastic_mapping = SQLAlchemyMapper(model=User).load()
+
 
 ============
 DjangoORM example
 ============
 
-```python
-from django.db import models
-from elasticmapper import DjangoMapper
+.. code-block:: python
 
-class User(models.Model):
-    username = models.CharField(max_length=30)
-    is_active = models.BooleanField(default=True)
-    age = models.IntegerField()
+    from django.db import models
+    from elasticmapper import DjangoMapper
 
-user_elastic_mapping = DjangoMapper(model=User).load()
-```
+    class User(models.Model):
+        username = models.CharField(max_length=30)
+        is_active = models.BooleanField(default=True)
+        age = models.IntegerField()
+
+    user_elastic_mapping = DjangoMapper(model=User).load()
+
 
 ============
 Output for all examples
 ============
 
-```python
-{
-    'id': {'type': 'integer'},
-    'username': {'type': 'text'},
-    'age': {'type': 'integer'},
-    'is_active': {'type': 'boolean'}
-}
-```
+.. code-block::
+
+    {
+        'id': {'type': 'integer'},
+        'username': {'type': 'text'},
+        'age': {'type': 'integer'},
+        'is_active': {'type': 'boolean'}
+    }
