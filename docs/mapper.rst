@@ -1,3 +1,10 @@
+Mapper
+====================
+
+Mapper - base class for all ORM mappers.
+
+You have to use one of them: ``DjangoMapper``, ``SQLAlchemyMapper``, ``PeeweeMapper``.
+
 ============
 ``elasticmapper.Mapper`` params
 ============
@@ -24,11 +31,11 @@ A dictionary that contains attribute names and their new names which will be lis
 
 For example:
 
-```elasticmapper.load(model=..., orm=..., alternative_names={'id': 'obj_id'})```
+``DjangoMapper(model=..., alternative_names={'id': 'obj_id'}).load()``
 
 Expected output:
 
-```{'obj_id': 'int'}```
+``{'obj_id': 'int'}``
 
 **follow_nested**
 
