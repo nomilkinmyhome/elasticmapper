@@ -1,6 +1,6 @@
 from peewee import *
 
-from elasticmapper import Mapper, SupportedORMs
+from elasticmapper import PeeweeMapper
 
 db = SqliteDatabase('my_app.db')
 
@@ -18,9 +18,8 @@ class User(BaseModel):
 
 
 def test_peewee_mapping():
-    user_elastic_mapping = Mapper(
+    user_elastic_mapping = PeeweeMapper(
         model=User,
-        orm=SupportedORMs.Peewee,
         keyword_fields=['name_keyword'],
     ).load()
     assert user_elastic_mapping['id'] == {'type': 'integer'}

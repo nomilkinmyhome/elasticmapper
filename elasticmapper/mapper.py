@@ -7,8 +7,6 @@ from elasticmapper.orm_mappings import (
     django_mapping,
 )
 
-FOREIGN_KEYS_FIELDS_NAMES = ('ForeignKey',)
-
 
 class Mapper:
     _supported_orms = tuple(SupportedORMs)
@@ -17,11 +15,11 @@ class Mapper:
         SupportedORMs.Peewee: peewee_mapping,
         SupportedORMs.DjangoORM: django_mapping,
     }
+    orm = None
 
     def __init__(
         self,
         model,
-        orm: Optional[SupportedORMs],
         keyword_fields: Optional[Collection[str]] = None,
         alternative_names: Optional[Dict[str, str]] = None,
         include: Collection[Optional[str]] = (),
@@ -29,18 +27,13 @@ class Mapper:
         follow_nested: bool = False,
     ):
         self.model = model
-        self.orm = orm
         self.keyword_fields = keyword_fields
         self.alternative_names = alternative_names
         self.include = include
         self.exclude = exclude
         self.follow_nested = follow_nested
-        self.orm_mapping = self._orm_fields_mapping.get(orm)
+        self.orm_mapping = self._orm_fields_mapping.get(self.orm)
         self.schema = self._get_model_columns()
-
-        if orm not in self._supported_orms:
-            raise RuntimeError(f'ORM is not supported yet. '
-                               f'Supported ORMs: {[value for _, value in self._supported_orms]}')
 
     def load(self):
         self._fill_schema()
@@ -59,43 +52,12 @@ class Mapper:
             )
             if any(conditions):
                 extra_columns.append(column_name)
-            if column_value in FOREIGN_KEYS_FIELDS_NAMES:
-                self.schema[column_name] = {
-                    'type': self._process_foreign_keys(column_name)
-                }
-            else:
-                self.schema[column_name] = {'type': self.orm_mapping.get(column_value)}
+            self.schema[column_name] = self._map_field(column_name, column_value)
         self._delete_extra_columns(extra_columns)
-
-    def _process_foreign_keys(self, column_name):
-        if self.orm is SupportedORMs.DjangoORM:
-            if not self.follow_nested:
-                return self.orm_mapping.get(
-                    self.model._meta.get_field(column_name).target_field.model._meta.local_fields[0].get_internal_type())
-            else:
-                return {
-                    'properties': self.__class__(
-                        model=self.model._meta.get_field(column_name).target_field.model,
-                        orm=self.orm,
-                    ).load(),
-                }
 
     def _delete_extra_columns(self, columns_to_delete):
         for column in columns_to_delete:
             self.schema.pop(column)
-
-    def _get_model_columns(self):
-        columns = {}
-        if self.orm is SupportedORMs.SQLAlchemy:
-            for column in self.model.__table__.columns:
-                columns[column.name] = column.type.__class__.__visit_name__
-        if self.orm is SupportedORMs.Peewee:
-            for column_name, column_meta in self.model._meta.columns.items():
-                columns[column_name] = column_meta.__class__.field_type
-        if self.orm is SupportedORMs.DjangoORM:
-            for column_name in self.model._meta.local_fields:
-                columns[column_name.__dict__['name']] = column_name.get_internal_type()
-        return columns
 
     def _fill_keyword_fields(self):
         for column_name in self.schema.keys():
@@ -110,3 +72,92 @@ class Mapper:
                     new_schema[new_name] = {'type': column_type['type']}
                     new_schema.pop(old_name)
         return new_schema
+
+    def _get_model_columns(self):
+        raise NotImplementedError
+
+    def _process_foreign_keys(self, column_name):
+        raise NotImplementedError
+
+    def _map_field(self, column_name, column_value):
+        raise NotImplementedError
+
+
+class DjangoMapper(Mapper):
+    orm = SupportedORMs.DjangoORM
+
+    def _get_model_columns(self):
+        columns = {}
+        for column_name in self.model._meta.local_fields:
+            columns[column_name.__dict__['name']] = column_name.get_internal_type()
+        return columns
+
+    def _process_foreign_keys(self, column_name):
+        foreign_model = self.model._meta.get_field(column_name).target_field.model
+        if not self.follow_nested:
+            return self.orm_mapping.get(foreign_model._meta.local_fields[0].get_internal_type())
+        else:
+            return {
+                'properties': self.__class__(
+                    model=foreign_model,
+                ).load(),
+            }
+
+    def _map_field(self, column_name, column_value):
+        if column_value == 'ForeignKey':
+            return {'type': self._process_foreign_keys(column_name)}
+        else:
+            return {'type': self.orm_mapping.get(column_value)}
+
+
+class SQLAlchemyMapper(Mapper):
+    orm = SupportedORMs.SQLAlchemy
+
+    def _get_model_columns(self):
+        columns = {}
+        try:
+            for column in self.model.__table__.columns:
+                columns[column.name] = column.type.__class__.__visit_name__
+        except AttributeError:
+            for column in self.model.columns:
+                columns[column.name] = column.type.__class__.__visit_name__
+        return columns
+
+    def _process_foreign_keys(self, column_name):
+        column = self.model.__table__.columns.get(column_name)
+        foreign_model = next(iter(column.foreign_keys)).column.table
+        if not self.follow_nested:
+            return self.orm_mapping.get(foreign_model.columns[0].type.__class__.__visit_name__)
+        else:
+            return {
+                'properties': self.__class__(
+                    model=foreign_model,
+                ).load(),
+            }
+
+    def _map_field(self, column_name, column_value):
+        try:
+            column = self.model.__table__.columns.get(column_name)
+        except AttributeError:
+            column = self.model.columns.get(column_name)
+        fks = tuple(column.foreign_keys)
+        if len(fks) > 0:
+            return {'type': self._process_foreign_keys(column_name)}
+        else:
+            return {'type': self.orm_mapping.get(column_value)}
+
+
+class PeeweeMapper(Mapper):
+    orm = SupportedORMs.Peewee
+
+    def _get_model_columns(self):
+        columns = {}
+        for column_name, column_meta in self.model._meta.columns.items():
+            columns[column_name] = column_meta.__class__.field_type
+        return columns
+
+    def _process_foreign_keys(self, column_name):
+        return None
+
+    def _map_field(self, column_name, column_value):
+        return {'type': self.orm_mapping.get(column_value)}
