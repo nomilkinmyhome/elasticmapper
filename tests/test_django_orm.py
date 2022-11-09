@@ -6,6 +6,7 @@ from django.apps import apps
 from django.db import models
 
 from elasticmapper import DjangoMapper
+from tests.common import fk_mapping_test_data
 
 conf = {
     'INSTALLED_APPS': ['tests'],
@@ -44,17 +45,7 @@ def test_django_mapping():
 
 @pytest.mark.parametrize(
     'follow_nested, excepted_result',
-    [
-        (False, {'type': 'integer'}),
-        (True, {'type': {
-            'properties': {
-                'id': {'type': 'integer'},
-                'username': {'type': 'text'},
-                'is_active': {'type': 'boolean'},
-                'age': {'type': 'short'},
-            },
-        }}),
-    ]
+    fk_mapping_test_data,
 )
 def test_django_fk_mapping(follow_nested, excepted_result):
     post_elastic_mapping = DjangoMapper(

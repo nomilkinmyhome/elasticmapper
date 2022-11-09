@@ -2,6 +2,7 @@ import pytest
 from peewee import *
 
 from elasticmapper import PeeweeMapper
+from tests.common import fk_mapping_test_data
 
 db = SqliteDatabase('my_app.db')
 
@@ -37,21 +38,9 @@ def test_peewee_mapping():
 
 @pytest.mark.parametrize(
     'follow_nested, excepted_result',
-    [
-        (False, {'type': 'integer'}),
-        (True, {'type': {
-            'properties': {
-                'id': {'type': 'integer'},
-                'username': {'type': 'text'},
-                'is_active': {'type': 'boolean'},
-                'age': {'type': 'short'},
-            },
-        }}),
-    ]
+    fk_mapping_test_data,
 )
 def test_peewee_fk_mapping(follow_nested, excepted_result):
-    print(Post._meta.columns.values())
-
     post_elastic_mapping = PeeweeMapper(
         model=Post,
         follow_nested=follow_nested,

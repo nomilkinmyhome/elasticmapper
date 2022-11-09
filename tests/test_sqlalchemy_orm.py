@@ -4,6 +4,7 @@ from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, Integer, String, Boolean, SmallInteger, ForeignKey
 
 from elasticmapper import SQLAlchemyMapper
+from tests.common import fk_mapping_test_data
 
 Base = declarative_base()
 
@@ -43,17 +44,7 @@ def test_sqlalchemy_mapping():
 
 @pytest.mark.parametrize(
     'follow_nested, excepted_result',
-    [
-        (False, {'type': 'integer'}),
-        (True, {'type': {
-            'properties': {
-                'id': {'type': 'integer'},
-                'username': {'type': 'text'},
-                'age': {'type': 'short'},
-                'is_active': {'type': 'boolean'},
-            },
-        }}),
-    ]
+    fk_mapping_test_data,
 )
 def test_sqlalchemy_fk_mapping(follow_nested, excepted_result):
     post_elastic_mapping = SQLAlchemyMapper(
