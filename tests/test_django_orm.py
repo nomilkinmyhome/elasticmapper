@@ -5,7 +5,7 @@ from django.conf import settings
 from django.apps import apps
 from django.db import models
 
-from elasticmapper import load, SupportedORMs
+from elasticmapper import Mapper, SupportedORMs
 
 conf = {
     'INSTALLED_APPS': ['tests'],
@@ -32,11 +32,11 @@ class Post(models.Model):
 
 
 def test_django_mapping():
-    user_elastic_mapping = load(
+    user_elastic_mapping = Mapper(
         model=User,
         orm=SupportedORMs.DjangoORM,
         include=('username', 'age'),
-    )
+    ).load()
     assert user_elastic_mapping['username'] == {'type': 'text'}
     assert user_elastic_mapping['age'] == {'type': 'short'}
     assert 'is_active' not in user_elastic_mapping
@@ -58,9 +58,9 @@ def test_django_mapping():
     ]
 )
 def test_django_fk_mapping(follow_nested, excepted_result):
-    post_elastic_mapping = load(
+    post_elastic_mapping = Mapper(
         model=Post,
         orm=SupportedORMs.DjangoORM,
         follow_nested=follow_nested,
-    )
+    ).load()
     assert post_elastic_mapping['author'] == excepted_result
