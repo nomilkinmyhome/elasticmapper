@@ -48,7 +48,7 @@ Expected output:
 ``{'obj_id': 'integer'}``
 
 ^^^^
-follow_nested
+follow_nested ``: bool``
 ^^^^
 
 When it is False, generated mapping with FK contains type of the relation field, otherwise mapping contains related model schema.

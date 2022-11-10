@@ -4,10 +4,7 @@ author = "Polina Beskorovaynaya"
 language = "en"
 
 html_sidebars = {
-    'Basic usage': [
-        'basic_usage.html',
-    ],
-    'Mapper': [
-        'mapper.html',
-    ]
+    'Installation': ['index.html'],
+    'Basic usage': ['basic_usage.html'],
+    'Mapper': ['mapper.html'],
 }
