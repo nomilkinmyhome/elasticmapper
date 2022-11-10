@@ -25,6 +25,7 @@ class User(models.Model):
     username = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
     age = models.SmallIntegerField()
+    json_data = models.JSONField(default=dict())
 
 
 class Post(models.Model):
@@ -33,12 +34,23 @@ class Post(models.Model):
 
 
 def test_django_mapping():
+    custom_values = {
+        'json_data': {
+            'type': {
+                'properties': {
+                    'key': {'type': 'integer'},
+                },
+            },
+        },
+    }
     user_elastic_mapping = DjangoMapper(
         model=User,
         include=('username', 'age'),
+        custom_values=custom_values,
     ).load()
     assert user_elastic_mapping['username'] == {'type': 'text'}
     assert user_elastic_mapping['age'] == {'type': 'short'}
+    assert user_elastic_mapping['json_data'] == custom_values['json_data']
     assert 'is_active' not in user_elastic_mapping
     assert 'id' not in user_elastic_mapping
 
@@ -52,4 +64,5 @@ def test_django_fk_mapping(follow_nested, excepted_result):
         model=Post,
         follow_nested=follow_nested,
     ).load()
-    assert post_elastic_mapping['author'] == excepted_result
+    for item in excepted_result:
+        assert item in post_elastic_mapping['author']

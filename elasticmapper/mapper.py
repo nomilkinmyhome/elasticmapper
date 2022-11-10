@@ -25,6 +25,7 @@ class Mapper:
         include: Collection[Optional[str]] = (),
         exclude: Collection[Optional[str]] = (),
         follow_nested: bool = False,
+        custom_values: Optional[Dict[str, dict]] = None,
     ):
         self.model = model
         self.keyword_fields = keyword_fields
@@ -32,6 +33,7 @@ class Mapper:
         self.include = include
         self.exclude = exclude
         self.follow_nested = follow_nested
+        self.custom_values = custom_values
         self.orm_mapping = self._orm_fields_mapping.get(self.orm)
         self.schema = self._get_model_columns()
 
@@ -39,6 +41,8 @@ class Mapper:
         self._fill_schema()
         if self.keyword_fields is not None:
             self._fill_keyword_fields()
+        if self.custom_values is not None:
+            self._process_custom_values()
         if self.alternative_names is not None:
             self.schema = self._rename_fields_using_alternative_names()
         return self.schema
@@ -54,6 +58,10 @@ class Mapper:
                 extra_columns.append(column_name)
             self.schema[column_name] = self._map_field(column_name, column_value)
         self._delete_extra_columns(extra_columns)
+
+    def _process_custom_values(self):
+        for custom_key, custom_value in self.custom_values.items():
+            self.schema[custom_key] = custom_value
 
     def _delete_extra_columns(self, columns_to_delete):
         for column in columns_to_delete:
