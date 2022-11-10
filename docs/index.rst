@@ -1,4 +1,4 @@
-Welcome to ElasticMapper's documentation!
+Welcome to elasticmapper's documentation!
 ====================
 
 **elasticmapper** is a ElasticSearch mapper for three ORMs - SQLAlchemy, Peewee, DjangoORM.
@@ -14,6 +14,11 @@ Installation
 ============
 Contents
 ============
+
+.. toctree::
+
+    basic_usage
+    mapper
 
 - `Basic usage <https://elasticmapper.readthedocs.io/en/latest/basic_usage.html>`_
 - `elasticmapper.Mapper <https://elasticmapper.readthedocs.io/en/latest/mapper.html>`_
