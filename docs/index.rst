@@ -19,6 +19,3 @@ Contents
 
     basic_usage
     mapper
-
-- `Basic usage <https://elasticmapper.readthedocs.io/en/latest/basic_usage.html>`_
-- `elasticmapper.Mapper <https://elasticmapper.readthedocs.io/en/latest/mapper.html>`_
