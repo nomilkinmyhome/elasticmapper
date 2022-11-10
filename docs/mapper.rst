@@ -84,3 +84,31 @@ Because foreign model has ``Integer`` PK-field
     }}
 
 Now we see foreign model schema instead of PK-field's type
+
+^^^^
+custom_values ``: Dict[str, dict]``
+^^^^
+
+Allows to set custom, non-automatically generated values. Exists for specific cases or for more fine tuning.
+
+For example:
+
+.. code-block:: python
+
+    mapping = DjangoMapper(
+        model=SomeModel,
+        custom_values={
+            'some_field': {'type': 'date', 'format': 'dd-yyyy-MM'}
+        },
+    ).load()
+
+
+``elasticmapper`` can not choose date format instead of user, so you have to specify it explicitly with ``custom_values``.
+
+Output:
+
+.. code-block:: json
+
+    {
+        "some_field": {"type": "date", "format": "dd-yyyy-MM"}
+    }
