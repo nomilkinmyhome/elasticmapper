@@ -9,23 +9,33 @@ You have to use one of them: ``DjangoMapper``, ``SQLAlchemyMapper``, ``PeeweeMap
 ``elasticmapper.Mapper`` params
 ============
 
-**model** ``: Union[django.models.Model, peewee.Model, sqlalchemy.declarative_base()]``
+****
+model ``: Union[django.models.Model, peewee.Model, sqlalchemy.declarative_base()]``
+****
 
 A model instance.
 
-**keyword_fields** ``: Iterable[str]``
+****
+keyword_fields ``: Iterable[str]``
+****
 
 Contains attribute names. All of them has ``keyword`` type in the output mapping.
 
-**include** ``: Iterable[str]``
+****
+include ``: Iterable[str]``
+****
 
 Contains attribute names. Result mapping contains only these attributes, the others will not be included.
 
-**exclude** ``: Iterable[str]``
+****
+exclude ``: Iterable[str]``
+****
 
 Contains attribute names. Result mapping contains all attributes except for them.
 
-**alternative_names** ``: Dict[str, str]``
+****
+alternative_names ``: Dict[str, str]``
+****
 
 Contains attribute names and their new names. Result mapping has only new names instead of originals.
 
@@ -37,7 +47,9 @@ Expected output:
 
 ``{'obj_id': 'integer'}``
 
-**follow_nested**
+****
+follow_nested
+****
 
 When it is False, generated mapping with FK contains type of the relation field, otherwise mapping contains related model schema.
 
