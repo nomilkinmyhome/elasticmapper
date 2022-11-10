@@ -1,9 +1,10 @@
 Basic usage
 ====================
 
-============
+------------
 Peewee example
-============
+------------
+
 .. code-block:: python
 
     from peewee import *
@@ -23,9 +24,9 @@ Peewee example
     user_elastic_mapping = PeeweeMapper(model=User).load()
 
 
-============
+------------
 SQLAlchemy example
-============
+------------
 
 .. code-block:: python
 
@@ -45,9 +46,9 @@ SQLAlchemy example
     user_elastic_mapping = SQLAlchemyMapper(model=User).load()
 
 
-============
+------------
 DjangoORM example
-============
+------------
 
 .. code-block:: python
 
@@ -62,9 +63,7 @@ DjangoORM example
     user_elastic_mapping = DjangoMapper(model=User).load()
 
 
-============
-Output for all examples
-============
+**Output for all examples**
 
 .. code-block::
 
