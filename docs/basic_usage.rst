@@ -1,6 +1,9 @@
-# Basic usage
+Basic usage
+====================
 
-### Peewee example
+============
+Peewee example
+============
 ```python
 from peewee import *
 from elasticmapper import PeeweeMapper
@@ -19,7 +22,9 @@ class User(BaseModel):
 user_elastic_mapping = PeeweeMapper(model=User).load()
 ```
 
-### SQLAlchemy example
+============
+SQLAlchemy example
+============
 
 ```python
 from sqlalchemy.orm import declarative_base
@@ -38,7 +43,9 @@ class User(Base):
 user_elastic_mapping = SQLAlchemyMapper(model=User).load()
 ```
 
-### DjangoORM example
+============
+DjangoORM example
+============
 
 ```python
 from django.db import models
@@ -52,7 +59,9 @@ class User(models.Model):
 user_elastic_mapping = DjangoMapper(model=User).load()
 ```
 
-#### Output for all examples: 
+============
+Output for all examples
+============
 
 ```python
 {

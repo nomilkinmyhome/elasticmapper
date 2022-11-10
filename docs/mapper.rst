@@ -1,22 +1,24 @@
-# elasticmapper.Mapper params
+============
+``elasticmapper.Mapper`` params
+============
 
-### *model
+**model**
 
 A model instance.
 
-### keyword_fields
+**keyword_fields**
 
 A collection that contains attribute names. All of them will have ```keyword``` type in the output mapping.
 
-### include
+**include**
 
 A collection that contains attribute names. Attributes that are not listed in this collection will not be included in the output mapping.
 
-### exclude
+**exclude**
 
 A collection that contains attribute names. Attributes that are listed in this collection will not be included in the output mapping.
 
-### alternative_names
+**alternative_names**
 
 A dictionary that contains attribute names and their new names which will be listed in the output mapping.
 
@@ -28,6 +30,6 @@ Expected output:
 
 ```{'obj_id': 'int'}```
 
-### follow_nested
+**follow_nested**
 
 When it is False, generated mapping with FK contains only type of the relation field, otherwise mapping contains related model schema.

@@ -1,13 +1,16 @@
 ElasticMapper
 ====================
 
-ElasticSearch mapper for three ORMs - SQLAlchemy, Peewee, DjangoORM.
+**ElasticSearch mapper for three ORMs - SQLAlchemy, Peewee, DjangoORM.**
 
 Allows you to easily generate ElasticSearch mappings based on models.
 
-.. toctree::
-   :maxdepth: 1
+============
+Installation
+============
 
-   installation
-   basic usage
-   ```elasticmapper.Mapper```
+``pip install elasticmapper``
+
+
+- `Basic usage <https://elasticmapper.readthedocs.io/en/latest/basic_usage.html>`_
+- `elasticmapper.Mapper <https://elasticmapper.readthedocs.io/en/latest/mapper.html>`_
