@@ -65,11 +65,11 @@ DjangoORM example
 
 **Output for all examples**
 
-.. code-block::
+.. code-block:: json
 
     {
-        'id': {'type': 'integer'},
-        'username': {'type': 'text'},
-        'age': {'type': 'integer'},
-        'is_active': {'type': 'boolean'}
+        "id": {"type": "integer"},
+        "username": {"type": "text"},
+        "age": {"type": "integer"},
+        "is_active": {"type": "boolean"}
     }
