@@ -9,25 +9,25 @@ You have to use one of them: ``DjangoMapper``, ``SQLAlchemyMapper``, ``PeeweeMap
 ``elasticmapper.Mapper`` params
 ============
 
-**model**
+**model** ``: Union[django.models.Model, peewee.Model, sqlalchemy.declarative_base()]``
 
 A model instance.
 
-**keyword_fields**
+**keyword_fields** ``: Iterable[str]``
 
-A collection that contains attribute names. All of them will have ```keyword``` type in the output mapping.
+Contains attribute names. All of them has ``keyword`` type in the output mapping.
 
-**include**
+**include** ``: Iterable[str]``
 
-A collection that contains attribute names. Attributes that are not listed in this collection will not be included in the output mapping.
+Contains attribute names. Result mapping contains only these attributes, the others will not be included.
 
-**exclude**
+**exclude** ``: Iterable[str]``
 
-A collection that contains attribute names. Attributes that are listed in this collection will not be included in the output mapping.
+Contains attribute names. Result mapping contains all attributes except for them.
 
-**alternative_names**
+**alternative_names** ``: Dict[str, str]``
 
-A dictionary that contains attribute names and their new names which will be listed in the output mapping.
+Contains attribute names and their new names. Result mapping has only new names instead of originals.
 
 For example:
 
@@ -35,8 +35,40 @@ For example:
 
 Expected output:
 
-``{'obj_id': 'int'}``
+``{'obj_id': 'integer'}``
 
 **follow_nested**
 
-When it is False, generated mapping with FK contains only type of the relation field, otherwise mapping contains related model schema.
+When it is False, generated mapping with FK contains type of the relation field, otherwise mapping contains related model schema.
+
+For example, ``follow_nested=False``:
+
+.. code-block:: python
+
+    mapping = DjangoMapper(
+        model=SomeModel,
+        follow_nested=False,
+    ).load()
+
+Output:
+
+.. code-block:: json
+
+    {"type": "integer"}
+
+Because foreign model has ``Integer`` PK-field
+
+``follow_nested=True`` generates this mapping:
+
+.. code-block:: json
+
+    {"type": {
+        "properties": {
+            "id": {"type": "integer"},
+            "username": {"type": "text"},
+            "is_active": {"type": "boolean"},
+            "age": {"type": "short"},
+        },
+    }}
+
+Now we see foreign model schema instead of PK-field's type
