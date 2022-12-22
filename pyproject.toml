@@ -17,3 +17,27 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://github.com/nomilkinmyhome/elasticmapper"
 "Bug Tracker" = "https://github.com/nomilkinmyhome/elasticmapper/issues"
+[tool.poetry]
+name = "elasticmapper"
+version = "1.0.0"
+description = "ElasticSearch mapper"
+authors = ["nomilkinmyhome <vyckluchi75@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
+flake8 = "^6.0.0"
+sqlalchemy = "^1.4.45"
+peewee = "^3.15.4"
+django = "^4.1.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
