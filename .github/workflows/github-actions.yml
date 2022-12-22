@@ -31,9 +31,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: |
-          python -m pip install -r requirements.txt
+        run: pip install poetry && poetry install --with dev
       - name: Lint code
-        run: flake8 elasticmapper --ignore E501
+        run: poetry run flake8 elasticmapper --ignore E501
       - name: Run tests
-        run: pytest
+        run: poetry run pytest
