@@ -33,6 +33,6 @@ jobs:
       - name: Install dependencies
         run: pip install poetry && poetry install --with dev
       - name: Lint code
-        run: poetry run flake8 elasticmapper
+        run: poetry run flake8
       - name: Run tests
         run: poetry run pytest
