@@ -37,6 +37,7 @@ flake8 = "^6.0.0"
 sqlalchemy = "^1.4.45"
 peewee = "^3.15.4"
 django = "^4.1.4"
+pre-commit = "^2.20.0"
 
 [build-system]
 requires = ["poetry-core"]
