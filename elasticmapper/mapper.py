@@ -123,12 +123,14 @@ class SQLAlchemyMapper(Mapper):
 
     def _get_model_columns(self):
         columns = {}
+
         try:
-            for column in self.model.__table__.columns:
-                columns[column.name] = column.type.__class__.__visit_name__
+            model_columns = self.model.__table__.columns
         except AttributeError:
-            for column in self.model.columns:
-                columns[column.name] = column.type.__class__.__visit_name__
+            model_columns = self.model.columns
+
+        for column in model_columns:
+            columns[column.name] = column.type.__class__.__visit_name__
         return columns
 
     def _process_foreign_keys(self, column_name):

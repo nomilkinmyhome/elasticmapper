@@ -12,4 +12,5 @@ mapping = {
     'time': 'date',
     'small_integer': 'short',
     'numeric': 'double',
+    'UUID': 'text',
 }

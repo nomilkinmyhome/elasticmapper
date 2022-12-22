@@ -14,4 +14,5 @@ mapping = {
     'SMALLINT': 'short',
     'DOUBLE': 'double',
     'DECIMAL': 'scaled_float',
+    'UUID': 'text',
 }

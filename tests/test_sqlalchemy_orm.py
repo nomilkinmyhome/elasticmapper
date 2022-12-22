@@ -1,5 +1,7 @@
-import pytest
+import uuid
 
+import pytest
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy import Column, Integer, String, Boolean, SmallInteger, ForeignKey
 
@@ -12,7 +14,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     username = Column(String)
     is_active = Column(Boolean)
     age = Column(SmallInteger)
@@ -35,7 +37,7 @@ def test_sqlalchemy_mapping():
         },
         exclude=['is_active'],
     ).load()
-    assert user_elastic_mapping['id'] == {'type': 'integer'}
+    assert user_elastic_mapping['id'] == {'type': 'text'}
     assert user_elastic_mapping['username'] == {'type': 'text'}
     assert user_elastic_mapping['user_age'] == {'type': 'short'}
     assert 'is_active' not in user_elastic_mapping
