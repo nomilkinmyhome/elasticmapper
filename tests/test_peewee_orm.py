@@ -1,5 +1,13 @@
 import pytest
-from peewee import *
+from peewee import (
+    SqliteDatabase,
+    Model,
+    UUIDField,
+    CharField,
+    BooleanField,
+    SmallIntegerField,
+    ForeignKeyField,
+)
 
 from elasticmapper import PeeweeMapper
 from tests.common import fk_mapping_test_data
@@ -13,6 +21,7 @@ class BaseModel(Model):
 
 
 class User(BaseModel):
+    id = UUIDField()
     username = CharField(unique=True)
     is_active = BooleanField(default=True)
     age = SmallIntegerField()
@@ -29,7 +38,7 @@ def test_peewee_mapping():
         model=User,
         keyword_fields=['name_keyword'],
     ).load()
-    assert user_elastic_mapping['id'] == {'type': 'integer'}
+    assert user_elastic_mapping['id'] == {'type': 'text'}
     assert user_elastic_mapping['username'] == {'type': 'text'}
     assert user_elastic_mapping['age'] == {'type': 'short'}
     assert user_elastic_mapping['is_active'] == {'type': 'boolean'}

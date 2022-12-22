@@ -23,4 +23,5 @@ mapping = {
     'PositiveSmallIntegerField': 'short',
     'FilePathField': 'text',
     'CommaSeparatedIntegerField': 'numeric',
+    'UUIDField': 'text',
 }

@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import pytest
 from django.conf import settings
@@ -31,6 +32,17 @@ class User(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+
+
+class Tag(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False,
+    )
+    title = models.CharField(max_length=30)
+    score = models.FloatField(default=3.0)
+    # posts = models.ManyToManyField(to=Post)
 
 
 def test_django_mapping():
@@ -66,3 +78,12 @@ def test_django_fk_mapping(follow_nested, excepted_result):
     ).load()
     for item in excepted_result:
         assert item in post_elastic_mapping['author']
+
+
+@pytest.mark.skip("no m2m support")
+def test_m2m():
+    mapping = DjangoMapper(model=Tag).load()
+    assert mapping['id'] == {'type': 'text'}
+    assert mapping['title'] == {'type': 'text'}
+    assert mapping['score'] == {'type': 'float'}
+    assert mapping['posts'] == {'type': 'float'}
