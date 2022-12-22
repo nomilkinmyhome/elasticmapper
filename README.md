@@ -76,7 +76,7 @@ Documentation lives [here](https://elasticmapper.readthedocs.io/en/latest/).
 
 ## Contributing
 
-PR are welcome! If you want to help, please check [the issues](https://github.com/nomilkinmyhome/elasticmapper/issues) and fix one of them. Thank you for your contribution.
+PR are welcome! If you want to help, please visit [contribution guide](https://github.com/nomilkinmyhome/elasticmapper/blob/main/CONTRIBUTION_GUIDE.md), then [the issues list](https://github.com/nomilkinmyhome/elasticmapper/issues) and fix one of them. Thank you for your contribution.
 
 ## License 
 

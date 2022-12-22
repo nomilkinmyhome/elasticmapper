@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: "v3.4.0"
+    hooks:
+      - id: check-merge-conflict
+        stages: [ commit, push ]
+      - id: check-ast
+        stages: [ commit ]
+
+  - repo: local
+    hooks:
+      - id: flake8
+        name: flake8
+        entry: poetry run flake8
+        language: system
+        types: [ python ]
+        stages: [ commit ]
+
+      - id: pytest
+        name: pytest
+        entry: poetry run pytest
+        language: system
+        always_run: false
+        pass_filenames: false
+        stages: [ push ]
