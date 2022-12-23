@@ -1,6 +1,6 @@
 # Contributing
 
-#### Install project: 
+#### Install dev dependencies: 
 ```bash
 poetry install --with dev
 ```
