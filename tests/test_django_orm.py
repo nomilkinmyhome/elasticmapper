@@ -34,6 +34,11 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=30)
+    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+
+
 class Tag(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -78,6 +83,13 @@ def test_django_fk_mapping(follow_nested, excepted_result):
     ).load()
     for item in excepted_result:
         assert item in post_elastic_mapping['author']
+
+
+def test_django_self_join_mapping():
+    flat = DjangoMapper(model=Category, follow_nested=False).load()
+    nested = DjangoMapper(model=Category, follow_nested=True).load()
+    assert flat == nested
+    assert nested['parent'] == {'type': 'integer'}
 
 
 @pytest.mark.skip("no m2m support")
