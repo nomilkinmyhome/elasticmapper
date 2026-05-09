@@ -26,6 +26,7 @@ class Mapper:
         exclude: Collection[Optional[str]] = (),
         follow_nested: bool = False,
         custom_values: Optional[Dict[str, dict]] = None,
+        _visited: Optional[set] = None,
     ):
         self.model = model
         self.keyword_fields = keyword_fields
@@ -35,7 +36,12 @@ class Mapper:
         self.follow_nested = follow_nested
         self.custom_values = custom_values
         self.orm_mapping = self._orm_fields_mapping.get(self.orm)
+        self._visited = set(_visited) if _visited else set()
+        self._visited.add(self._model_key(model))
         self.schema = self._get_model_columns()
+
+    def _model_key(self, model):
+        return id(model)
 
     def load(self):
         self._fill_schema()
@@ -102,12 +108,13 @@ class DjangoMapper(Mapper):
 
     def _process_foreign_keys(self, column_name):
         foreign_model = self.model._meta.get_field(column_name).target_field.model
-        if not self.follow_nested:
+        if not self.follow_nested or self._model_key(foreign_model) in self._visited:
             return self.orm_mapping.get(foreign_model._meta.local_fields[0].get_internal_type())
         else:
             return {
                 'properties': self.__class__(
                     model=foreign_model,
+                    _visited=self._visited,
                 ).load(),
             }
 
@@ -120,6 +127,9 @@ class DjangoMapper(Mapper):
 
 class SQLAlchemyMapper(Mapper):
     orm = SupportedORMs.SQLAlchemy
+
+    def _model_key(self, model):
+        return id(getattr(model, '__table__', model))
 
     def _get_model_columns(self):
         columns = {}
@@ -136,12 +146,13 @@ class SQLAlchemyMapper(Mapper):
     def _process_foreign_keys(self, column_name):
         column = self.model.__table__.columns.get(column_name)
         foreign_model = next(iter(column.foreign_keys)).column.table
-        if not self.follow_nested:
+        if not self.follow_nested or self._model_key(foreign_model) in self._visited:
             return self.orm_mapping.get(foreign_model.columns[0].type.__class__.__visit_name__)
         else:
             return {
                 'properties': self.__class__(
                     model=foreign_model,
+                    _visited=self._visited,
                 ).load(),
             }
 
@@ -168,12 +179,13 @@ class PeeweeMapper(Mapper):
 
     def _process_foreign_keys(self, column_name):
         foreign_model = self.model._meta.columns.get(column_name).rel_model
-        if not self.follow_nested:
+        if not self.follow_nested or self._model_key(foreign_model) in self._visited:
             return self.orm_mapping.get(self.model._meta.columns.get(column_name).rel_field)
         else:
             return {
                 'properties': self.__class__(
                     model=foreign_model,
+                    _visited=self._visited,
                 ).load(),
             }
 

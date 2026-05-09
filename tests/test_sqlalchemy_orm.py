@@ -29,6 +29,14 @@ class Post(Base):
     author = Column(Integer, ForeignKey('users.id'))
 
 
+class Category(Base):
+    __tablename__ = 'categories'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    parent_id = Column(Integer, ForeignKey('categories.id'))
+
+
 def test_sqlalchemy_mapping():
     user_elastic_mapping = SQLAlchemyMapper(
         model=User,
@@ -54,3 +62,10 @@ def test_sqlalchemy_fk_mapping(follow_nested, excepted_result):
         follow_nested=follow_nested,
     ).load()
     assert post_elastic_mapping['author'] == excepted_result
+
+
+def test_sqlalchemy_self_join_mapping():
+    flat = SQLAlchemyMapper(model=Category, follow_nested=False).load()
+    nested = SQLAlchemyMapper(model=Category, follow_nested=True).load()
+    assert flat == nested
+    assert nested['parent_id'] == {'type': 'integer'}

@@ -33,6 +33,11 @@ class Post(BaseModel):
     author = ForeignKeyField(User, on_delete='CASCADE')
 
 
+class Category(BaseModel):
+    name = CharField()
+    parent = ForeignKeyField('self', null=True)
+
+
 def test_peewee_mapping():
     user_elastic_mapping = PeeweeMapper(
         model=User,
@@ -56,3 +61,10 @@ def test_peewee_fk_mapping(follow_nested, excepted_result):
     ).load()
     for field in excepted_result:
         assert field in post_elastic_mapping['author_id']
+
+
+def test_peewee_self_join_mapping():
+    flat = PeeweeMapper(model=Category, follow_nested=False).load()
+    nested = PeeweeMapper(model=Category, follow_nested=True).load()
+    assert flat == nested
+    assert 'properties' not in str(nested['parent_id'])
